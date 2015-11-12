@@ -5,17 +5,29 @@
  * Created on November 12, 2015, 1:19 PM
  */
 
-#ifndef TCPCONNECTTASK_HPP
-#define	TCPCONNECTTASK_HPP
+#ifndef SHELL_HELPER_TCPCONNECTTASK_HPP
+#define	SHELL_HELPER_TCPCONNECTTASK_HPP
 
-class TCPConnectTask {
+#include <string>
+#include <cstdint>
+
+#include "staticlib/pimpl.hpp"
+
+namespace shellhelper {
+
+class TCPConnectTask : public staticlib::pimpl::PimplObject {
+protected:
+    class Impl;
+
 public:
-    TCPConnectTask();
-    TCPConnectTask(const TCPConnectTask& orig);
-    virtual ~TCPConnectTask();
-private:
+    PIMPL_CONSTRUCTOR(TCPConnectTask)
 
+    TCPConnectTask();
+
+    bool check_connection(const std::string& ip, uint16_t port);
 };
 
-#endif	/* TCPCONNECTTASK_HPP */
+} // namespace
+
+#endif	/* SHELL_HELPER_TCPCONNECTTASK_HPP */
 

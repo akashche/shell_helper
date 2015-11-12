@@ -30,8 +30,11 @@ source_group ( "include" FILES ${${PROJECT_NAME}_HEADERS} )
 set ( ${PROJECT_NAME}_INCLUDES 
         ${CMAKE_CURRENT_LIST_DIR}/src
         ${CMAKE_CURRENT_LIST_DIR}/deps/tclap/include
+        ${CMAKE_CURRENT_LIST_DIR}/deps/asio/asio/include
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
-set ( ${PROJECT_NAME}_DEFINITIONS "" )
+set ( ${PROJECT_NAME}_DEFINITIONS 
+        -DASIO_STANDALONE
+        -DASIO_HAS_STD_CHRONO )
 if ( ${CMAKE_CXX_COMPILER_ID}x MATCHES "MSVCx" )    
     set ( ${PROJECT_NAME}_DEFINITIONS ${${PROJECT_NAME}_DEFINITIONS}
             -D_CRT_SECURE_NO_WARNINGS

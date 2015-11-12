@@ -22,3 +22,6 @@
 [submodule "deps/staticlib_serialization"]
 	path = deps/staticlib_serialization
 	url = https://github.com/staticlibs/staticlib_serialization.git
+[submodule "deps/asio"]
+	path = deps/asio
+	url = https://github.com/chriskohlhoff/asio.git
