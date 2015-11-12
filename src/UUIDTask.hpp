@@ -20,8 +20,10 @@ protected:
     
 public:
     PIMPL_CONSTRUCTOR(UUIDTask)
+            
+    UUIDTask();
     
-    static std::string generate_uuid();
+    std::string generate_uuid();
 };
 
 } // namespace

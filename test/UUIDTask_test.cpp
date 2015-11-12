@@ -13,7 +13,7 @@
 int main() {
     namespace sh = shellhelper;
     
-    std::string uuid = sh::UUIDTask::generate_uuid();
+    std::string uuid = sh::UUIDTask().generate_uuid();
     (void) uuid;
     assert(uuid.length() > 0);
 

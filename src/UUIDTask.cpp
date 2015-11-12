@@ -10,8 +10,8 @@
 #include "staticlib/utils.hpp"
 #include "staticlib/pimpl/pimpl_forward_macros.hpp"
 
-#include "UUIDTask.hpp"
 #include "ShellHelperException.hpp"
+#include "UUIDTask.hpp"
 
 namespace shellhelper {
 
@@ -20,13 +20,18 @@ namespace su = staticlib::utils;
 } // namespace
 
 class UUIDTask::Impl : public staticlib::pimpl::PimplObject::Impl {
+    GuidGenerator gen;
+    
 public:
-    static std::string generate_uuid() {
-        auto guid = GuidGenerator().newGuid();
+    Impl() { }
+    
+    std::string generate_uuid(UUIDTask&) {
+        auto guid = gen.newGuid();
         return su::to_string(guid);
     }
     
 };
-PIMPL_FORWARD_METHOD_STATIC(UUIDTask, std::string, generate_uuid, (), (), ShellHelperException)
+PIMPL_FORWARD_CONSTRUCTOR(UUIDTask, (), (), ShellHelperException)
+PIMPL_FORWARD_METHOD(UUIDTask, std::string, generate_uuid, (), (), ShellHelperException)
 
 } // namespace
