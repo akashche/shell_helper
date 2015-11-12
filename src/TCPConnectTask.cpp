@@ -55,7 +55,7 @@ public:
             std::lock_guard<std::mutex> guard{mutex};
             if (timer_cancelled) return;
             connect_cancelled = true;
-            socket.cancel();
+            socket.close();
             error_message = "ERROR: connection timed out (-1)";
         });
         service.run();
