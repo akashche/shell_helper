@@ -31,12 +31,21 @@ set ( ${PROJECT_NAME}_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/src
         ${CMAKE_CURRENT_LIST_DIR}/deps/tclap/include
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
+set ( ${PROJECT_NAME}_DEFINITIONS "" )
+if ( ${CMAKE_CXX_COMPILER_ID}x MATCHES "MSVCx" )    
+    set ( ${PROJECT_NAME}_DEFINITIONS ${${PROJECT_NAME}_DEFINITIONS}
+            -D_CRT_SECURE_NO_WARNINGS
+            -D_SCL_SECURE_NO_WARNINGS
+            -D_WIN32_WINNT=0x0501 
+            -DWIN32_LEAN_AND_MEAN )
+endif ( )            
 
 # executable
 add_executable ( ${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_HEADERS} )
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
 target_link_libraries ( ${PROJECT_NAME} ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
 target_compile_options ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )
+target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS} )
 
 # library for tests
 option ( ${PROJECT_NAME}_ENABLE_TESTS "Generate doxyfile and exit build" OFF )
@@ -45,4 +54,5 @@ if ( ${PROJECT_NAME}_ENABLE_TESTS )
     target_include_directories ( ${PROJECT_NAME}_test BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
     target_link_libraries ( ${PROJECT_NAME}_test ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
     target_compile_options ( ${PROJECT_NAME}_test PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )
+    target_compile_definitions ( ${PROJECT_NAME}_test PRIVATE ${${PROJECT_NAME}_DEFINITIONS} )
 endif ( )
