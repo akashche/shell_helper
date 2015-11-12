@@ -1,0 +1,24 @@
+[submodule "cmake"]
+	path = cmake
+	url = https://github.com/staticlibs/cmake.git
+[submodule "deps/tclap"]
+	path = deps/tclap
+	url = https://github.com/staticlibs/mirror_tclap.git
+[submodule "deps/staticlib_utils"]
+	path = deps/staticlib_utils
+	url = https://github.com/staticlibs/staticlib_utils.git
+[submodule "deps/staticlib_pimpl"]
+	path = deps/staticlib_pimpl
+	url = https://github.com/staticlibs/staticlib_pimpl.git
+[submodule "deps/external_crossguid"]
+	path = deps/external_crossguid
+	url = https://github.com/staticlibs/external_crossguid.git
+[submodule "deps/external_jansson"]
+	path = deps/external_jansson
+	url = https://github.com/staticlibs/external_jansson.git
+[submodule "deps/staticlib_reflection"]
+	path = deps/staticlib_reflection
+	url = https://github.com/staticlibs/staticlib_reflection.git
+[submodule "deps/staticlib_serialization"]
+	path = deps/staticlib_serialization
+	url = https://github.com/staticlibs/staticlib_serialization.git
