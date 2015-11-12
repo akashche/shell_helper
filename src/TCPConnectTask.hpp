@@ -24,7 +24,7 @@ public:
 
     TCPConnectTask();
 
-    bool check_connection(const std::string& ip, uint16_t port);
+    std::string check_connection(const std::string& ip, uint16_t port);
 };
 
 } // namespace

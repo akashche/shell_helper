@@ -17,13 +17,13 @@ int main() {
     
     sh::TCPConnectTask tct{};
     
-//    bool success = tct.check_connection("127.0.0.1", 22);
+//    std::string success = tct.check_connection("127.0.0.1", 22);
 //    (void) success;
-//    assert(success);
+//    assert(success.empty());
 
-    bool fail = tct.check_connection("127.0.0.1", 1234);
+    std::string fail = tct.check_connection("127.0.0.1", 1234);
     (void) fail;
-    assert(!fail);
+    assert(!fail.empty());
     
     return 0;
 }

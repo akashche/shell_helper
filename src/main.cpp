@@ -64,12 +64,12 @@ int main(int argc, char** argv) {
     // test TCP connection
     } else if ("connect" == task.getValue()) {
         validate_arg_set(task.getValue(), {&connect_ip, &connect_port});
-        bool success = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
-        if (!success) {
-            std::cout << "ERROR\n";
+        std::string err = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
+        if (!err.empty()) {
+            std::cout << err << std::endl;
             std::exit(1);
         }
-        std::cout << "SUCCESS\n";
+        std::cout << "SUCCESS" << std::endl;
     } else {
         task_name_error(task.getValue());
     }
