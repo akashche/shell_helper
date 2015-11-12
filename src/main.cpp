@@ -32,6 +32,14 @@ void validate_arg_set(const std::string& task, std::vector<tc::Arg*> args)  {
     }
 }
 
+void task_name_error(const std::string& task) {
+    std::cerr << "\nERROR: Invalid task specified: [" << task << "], supported tasks:\n\n";
+    std::cerr << "    - uuid: generate and print uuid\n\n";
+    std::cerr << "    - time: print current time\n\n";
+    std::cerr << "    - connect: test connection to specified ip address and port\n\n";
+    std::exit(1);
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -47,10 +55,13 @@ int main(int argc, char** argv) {
     cline.add(connect_port);
     // process
     cline.parse(argc, argv);
+    // generate UUID
     if ("uuid" == task.getValue()) {
         std::cout << sh::UUIDTask().generate_uuid() << std::endl;
+    // print current datetime    
     } else if("time" == task.getValue()) {
         std::cout << sh::CurrentDateTask().current_date(time_format.getValue()) << std::endl;
+    // test TCP connection
     } else if ("connect" == task.getValue()) {
         validate_arg_set(task.getValue(), {&connect_ip, &connect_port});
         bool success = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
@@ -60,11 +71,7 @@ int main(int argc, char** argv) {
         }
         std::cout << "SUCCESS\n";
     } else {
-        std::cerr << "\nERROR: Invalid task specified: [" << task.getValue() <<  "], supported tasks:\n\n";
-        std::cerr << "    - uuid: generate and print uuid\n\n";
-        std::cerr << "    - time: print current time\n\n";
-        std::cerr << "    - connect: test connection to specified ip address and port\n\n";
-        std::exit(1);
+        task_name_error(task.getValue());
     }
     
     return 0;
