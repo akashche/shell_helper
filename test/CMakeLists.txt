@@ -9,7 +9,7 @@ if ( NOT DEFINED STATICLIB_CMAKE )
 endif ( )
 
 # project
-project ( shellhelper_test CXX )
+project ( shell_helper_test CXX )
 include ( ${STATICLIB_CMAKE}/staticlibs_common.cmake )
 
 # dependencies

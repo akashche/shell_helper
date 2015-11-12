@@ -9,7 +9,7 @@ if ( NOT DEFINED STATICLIB_CMAKE )
 endif ( )
 
 # project
-project ( shellhelper CXX )
+project ( shell_helper CXX )
 include ( ${STATICLIB_CMAKE}/staticlibs_common.cmake )
 
 # dependencies
@@ -50,7 +50,7 @@ target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIO
 # library for tests
 option ( ${PROJECT_NAME}_ENABLE_TESTS "Generate doxyfile and exit build" OFF )
 if ( ${PROJECT_NAME}_ENABLE_TESTS )
-    add_library ( ${PROJECT_NAME}_test SHARED ${${PROJECT_NAME}_SRC} )
+    add_library ( ${PROJECT_NAME}_test STATIC ${${PROJECT_NAME}_SRC} )
     target_include_directories ( ${PROJECT_NAME}_test BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
     target_link_libraries ( ${PROJECT_NAME}_test ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
     target_compile_options ( ${PROJECT_NAME}_test PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )
