@@ -15,12 +15,22 @@ include ( ${STATICLIB_CMAKE}/staticlibs_common.cmake )
 # dependencies
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_crossguid )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_cppformat )
+if ( NOT STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
+    staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_jansson )
+endif ( )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_utils )
+staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_io )
+staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_reflection )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_pimpl )
+staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_serialization )
 set ( ${PROJECT_NAME}_DEPS 
         staticlib_utils
+        staticlib_io
+        staticlib_reflection
         staticlib_pimpl
+        staticlib_serialization
         crossguid
+        jansson
         cppformat )
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
@@ -55,7 +65,7 @@ target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIO
 # library for tests
 option ( ${PROJECT_NAME}_ENABLE_TESTS "Generate doxyfile and exit build" OFF )
 if ( ${PROJECT_NAME}_ENABLE_TESTS )
-    add_library ( ${PROJECT_NAME}_test STATIC ${${PROJECT_NAME}_SRC} )
+    add_library ( ${PROJECT_NAME}_test SHARED ${${PROJECT_NAME}_SRC} )
     target_include_directories ( ${PROJECT_NAME}_test BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
     target_link_libraries ( ${PROJECT_NAME}_test ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
     target_compile_options ( ${PROJECT_NAME}_test PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )

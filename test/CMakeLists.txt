@@ -17,7 +17,10 @@ set ( shell_helper_ENABLE_TESTS ON CACHE BOOL "" )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../../shell_helper )
 set ( ${PROJECT_NAME}_DEPS 
         staticlib_utils
-        staticlib_pimpl )
+        staticlib_io
+        staticlib_pimpl 
+        staticlib_reflection
+        staticlib_serialization )
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
 # tests

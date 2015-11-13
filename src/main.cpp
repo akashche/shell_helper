@@ -17,6 +17,7 @@
 #include "UUIDTask.hpp"
 #include "CurrentDateTask.hpp"
 #include "TCPConnectTask.hpp"
+#include "ReplacerTask.hpp"
 
 namespace { // anonymous
 
@@ -35,8 +36,10 @@ void validate_arg_set(const std::string& task, std::vector<tc::Arg*> args)  {
 void task_name_error(const std::string& task) {
     std::cerr << "\nERROR: Invalid task specified: [" << task << "], supported tasks:\n\n";
     std::cerr << "    - uuid: generate and print uuid\n\n";
-    std::cerr << "    - time: print current time\n\n";
-    std::cerr << "    - connect: test connection to specified ip address and port\n\n";
+    std::cerr << "    - time: print current time using specified 'time_format' (optional)\n\n";
+    std::cerr << "    - connect: test connection to specified 'connect_ip' address and 'connect_port'\n\n";
+    std::cerr << "    - replace: replaces the placeholders in 'replace_source' file with the data\n" <<
+                 "      from the 'replace_params' file and writes the results into 'replace_dest' file\n\n";
     std::exit(1);
 }
 
@@ -53,6 +56,12 @@ int main(int argc, char** argv) {
     cline.add(connect_ip);
     tc::ValueArg<uint16_t> connect_port{"p", "connect_port", "[connect] TCP port to test connection", false, 0, "connect_port"};
     cline.add(connect_port);
+    tc::ValueArg<std::string> replace_source{"", "replace_source", "[replace] Source file for 'replace' task", false, "", "replace_source"};
+    cline.add(replace_source);
+    tc::ValueArg<std::string> replace_params{"", "replace_params", "[replace] Params JSON file for 'replace' task", false, "", "replace_params"};
+    cline.add(replace_params);
+    tc::ValueArg<std::string> replace_dest{"", "replace_dest", "[replace] Destination file for the 'replace' task", false, "", "replace_dest"};
+    cline.add(replace_dest);
     // process
     cline.parse(argc, argv);
     // generate UUID
@@ -70,6 +79,10 @@ int main(int argc, char** argv) {
             std::exit(1);
         }
         std::cout << "SUCCESS" << std::endl;
+    } else if ("replace" == task.getValue()) {
+        validate_arg_set(task.getValue(), {&replace_source, &replace_params, &replace_dest});
+        sh::ReplacerTask().replace_files(replace_source.getValue(), replace_params.getValue(), 
+                replace_dest.getValue());
     } else {
         task_name_error(task.getValue());
     }
