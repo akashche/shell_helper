@@ -11,6 +11,7 @@
 #include <atomic>
 
 #include "asio.hpp"
+#include "format.h"
 
 #include "staticlib/utils.hpp"
 #include "staticlib/pimpl/pimpl_forward_macros.hpp"
@@ -47,8 +48,7 @@ public:
             timer_cancelled = true;
             timer.cancel();
             if(ec) {
-                error_message = std::string{} + "ERROR: " + ec.message() + 
-                        " (" + su::to_string(ec.value()) + ")";
+                error_message = fmt::format("ERROR: {} ({})", ec.message(), su::to_string(ec.value()));
             }
         });        
         timer.async_wait([&](const asio::error_code&) {
@@ -56,7 +56,7 @@ public:
             if (timer_cancelled) return;
             connect_cancelled = true;
             socket.close();
-            error_message = "ERROR: connection timed out (-1)";
+            error_message = "ERROR: Connection timed out (-1)";
         });
         service.run();
         return error_message;

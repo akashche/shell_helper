@@ -14,12 +14,14 @@ include ( ${STATICLIB_CMAKE}/staticlibs_common.cmake )
 
 # dependencies
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_crossguid )
+staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_cppformat )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_utils )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_pimpl )
 set ( ${PROJECT_NAME}_DEPS 
         staticlib_utils
         staticlib_pimpl
-        crossguid )
+        crossguid
+        cppformat )
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
 # build

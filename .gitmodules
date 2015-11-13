@@ -25,3 +25,6 @@
 [submodule "deps/asio"]
 	path = deps/asio
 	url = https://github.com/chriskohlhoff/asio.git
+[submodule "deps/external_cppformat"]
+	path = deps/external_cppformat
+	url = https://github.com/staticlibs/external_cppformat.git
