@@ -43,9 +43,7 @@ void task_name_error(const std::string& task) {
     std::exit(1);
 }
 
-} // namespace
-
-int main(int argc, char** argv) {
+int launch(int argc, char** argv) {
     // options
     tc::CmdLine cline{"Shell Helper", ' ', "0.1"};
     tc::UnlabeledValueArg<std::string> task{"task", "Name of the task to perform", true, "", "task"};
@@ -67,10 +65,10 @@ int main(int argc, char** argv) {
     // generate UUID
     if ("uuid" == task.getValue()) {
         std::cout << sh::UUIDTask().generate_uuid() << std::endl;
-    // print current datetime    
-    } else if("time" == task.getValue()) {
+        // print current datetime    
+    } else if ("time" == task.getValue()) {
         std::cout << sh::CurrentDateTask().current_date(time_format.getValue()) << std::endl;
-    // test TCP connection
+        // test TCP connection
     } else if ("connect" == task.getValue()) {
         validate_arg_set(task.getValue(), {&connect_ip, &connect_port});
         std::string err = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
@@ -81,12 +79,23 @@ int main(int argc, char** argv) {
         std::cout << "SUCCESS" << std::endl;
     } else if ("replace" == task.getValue()) {
         validate_arg_set(task.getValue(), {&replace_source, &replace_params, &replace_dest});
-        sh::ReplacerTask().replace_files(replace_source.getValue(), replace_params.getValue(), 
+        sh::ReplacerTask().replace_files(replace_source.getValue(), replace_params.getValue(),
                 replace_dest.getValue());
     } else {
         task_name_error(task.getValue());
     }
-    
+
     return 0;
+}
+
+} // namespace
+
+int main(int argc, char** argv) {
+    try {
+        return launch(argc, argv);
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
+    } 
 }
 

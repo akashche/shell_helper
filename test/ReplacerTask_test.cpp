@@ -7,8 +7,9 @@
 
 #include <string>
 #include <array>
-#include <cassert>
+#include <iostream>
 
+#include "staticlib/utils/assert.hpp"
 #include "staticlib/utils.hpp"
 #include "staticlib/io.hpp"
 #include "staticlib/reflection.hpp"
@@ -50,12 +51,16 @@ void test_replace() {
     io::string_sink sink{};
     std::array<char, 8192> buf;
     io::copy_all(dest, sink, buf.data(), buf.size());
-    assert("41 42 43 44" == sink.get_string());
+    slassert("41 42 43 44" == sink.get_string());
 }
 
 int main() {
-    test_replace();
-
+    try {
+        test_replace();
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }
 

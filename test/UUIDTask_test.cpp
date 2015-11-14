@@ -6,17 +6,26 @@
  */
 
 #include <string>
-#include <cassert>
+#include <iostream>
+
+#include "staticlib/utils/assert.hpp"
 
 #include "UUIDTask.hpp"
 
-int main() {
-    namespace sh = shellhelper;
-    
-    std::string uuid = sh::UUIDTask().generate_uuid();
-    (void) uuid;
-    assert(uuid.length() > 0);
+namespace sh = shellhelper;
 
+void test_uuid() {
+    std::string uuid = sh::UUIDTask().generate_uuid();
+    slassert(uuid.length() > 0);
+}
+
+int main() {
+    try {
+        test_uuid();
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }
 

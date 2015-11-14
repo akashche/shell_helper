@@ -8,23 +8,31 @@
 #include <string>
 #include <iostream>
 #include <cstdint>
-#include <cassert>
+
+#include "staticlib/utils/assert.hpp"
 
 #include "TCPConnectTask.hpp"
 
-int main() {
-    namespace sh = shellhelper;
-    
+namespace sh = shellhelper;
+
+void test_connect() {
     sh::TCPConnectTask tct{};
-    
-//    std::string success = tct.check_connection("127.0.0.1", 22);
-//    (void) success;
-//    assert(success.empty());
+
+    //    std::string success = tct.check_connection("127.0.0.1", 22);
+    //    (void) success;
+    //    assert(success.empty());
 
     std::string fail = tct.check_connection("127.0.0.1", 1234);
-    (void) fail;
-    assert(!fail.empty());
-    
+    slassert(!fail.empty());
+}
+
+int main() {
+    try {
+        test_connect();
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }
 
