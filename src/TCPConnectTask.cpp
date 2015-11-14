@@ -55,7 +55,7 @@ private:
         auto time = std::chrono::system_clock::now(); // get the current time
         auto since_epoch = time.time_since_epoch(); // get the duration since epoch
         auto seconds = std::chrono::duration_cast<std::chrono::seconds>(since_epoch);
-        return seconds.count(); // just like java (new Date()).getTime();
+        return static_cast<uint32_t>(seconds.count()); // just like java (new Date()).getTime();
     }
 
     class Checker {
