@@ -27,6 +27,6 @@ staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_D
 set ( ${PROJECT_NAME}_TEST_INCLUDES 
         ${CMAKE_CURRENT_LIST_DIR}/../src 
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
-set ( ${PROJECT_NAME}_TEST_LIBS shell_helper_test )
+set ( ${PROJECT_NAME}_TEST_LIBS shell_helper_testing )
 set ( ${PROJECT_NAME}_TEST_OPTS "" )
 staticlib_enable_testing ( ${PROJECT_NAME}_TEST_INCLUDES ${PROJECT_NAME}_TEST_LIBS ${PROJECT_NAME}_TEST_OPTS )
