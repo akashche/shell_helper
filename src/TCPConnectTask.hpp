@@ -9,6 +9,7 @@
 #define	SHELL_HELPER_TCPCONNECTTASK_HPP
 
 #include <string>
+#include <chrono>
 #include <cstdint>
 
 #include "staticlib/pimpl.hpp"
@@ -25,6 +26,8 @@ public:
     TCPConnectTask();
 
     std::string check_connection(const std::string& ip, uint16_t port);
+    
+    bool wait_for_connection(const std::string& ip, uint16_t port, std::chrono::seconds timeout);
 };
 
 } // namespace

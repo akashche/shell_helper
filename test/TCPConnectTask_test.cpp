@@ -18,17 +18,23 @@ namespace sh = shellhelper;
 void test_connect() {
     sh::TCPConnectTask tct{};
 
-    //    std::string success = tct.check_connection("127.0.0.1", 22);
-    //    (void) success;
-    //    assert(success.empty());
+//    std::string success = tct.check_connection("127.0.0.1", 22);
+//    slassert(success.empty());
 
     std::string fail = tct.check_connection("127.0.0.1", 1234);
     slassert(!fail.empty());
 }
 
+void test_connect_wait() {
+    sh::TCPConnectTask tct{};
+    bool res = tct.wait_for_connection("127.0.0.1", 1234, std::chrono::seconds{2});
+    slassert(!res);
+}
+
 int main() {
     try {
         test_connect();
+        test_connect_wait();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

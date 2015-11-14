@@ -9,6 +9,8 @@
 #include <mutex>
 #include <chrono>
 #include <atomic>
+#include <thread>
+#include <cstdint>
 
 #include "asio.hpp"
 #include "format.h"
@@ -32,39 +34,77 @@ public:
     Impl() { }
     
     std::string check_connection(TCPConnectTask&, const std::string& ip, uint16_t port) {
-        asio::io_service service{};
-        asio::ip::tcp::socket socket{service, asio::ip::tcp::v4()};
-        auto addr = asio::ip::address_v4::from_string(ip);
-        asio::ip::tcp::endpoint ep{addr, port};
-        asio::steady_timer timer{service};
-        std::mutex mutex{};
-        std::atomic_bool connect_cancelled{false};
-        std::atomic_bool timer_cancelled{false};
-        std::string error_message = "";
-        timer.expires_from_now(std::chrono::seconds(1));
-        socket.async_connect(ep, [&](const asio::error_code& ec) {
-            std::lock_guard<std::mutex> guard{mutex};
-            if (connect_cancelled) return;
-            timer_cancelled = true;
-            timer.cancel();
-            if(ec) {
-                error_message = fmt::format("ERROR: {} ({})", ec.message(), su::to_string(ec.value()));
-            }
-        });        
-        timer.async_wait([&](const asio::error_code&) {
-            std::lock_guard<std::mutex> guard{mutex};
-            if (timer_cancelled) return;
-            connect_cancelled = true;
-            socket.close();
-            error_message = "ERROR: Connection timed out (-1)";
-        });
-        service.run();
-        return error_message;
+        Checker checker{*this, ip, port, std::chrono::seconds(1)};
+        return checker.check();
     }
+    
+    bool wait_for_connection(TCPConnectTask&, const std::string& ip, uint16_t port, std::chrono::seconds timeout) {
+        Checker checker{*this, ip, port, std::chrono::seconds(1)};
+        uint32_t start = current_time_in_seconds();
+        while (current_time_in_seconds() - start < timeout.count()) {
+            std::string err = checker.check();
+            if (err.empty()) return true;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        return false;
+    }
+    
+private:
+    // http://stackoverflow.com/a/2834294/314015
+    uint32_t current_time_in_seconds() {
+        auto time = std::chrono::system_clock::now(); // get the current time
+        auto since_epoch = time.time_since_epoch(); // get the duration since epoch
+        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(since_epoch);
+        return seconds.count(); // just like java (new Date()).getTime();
+    }
+
+    class Checker {
+        TCPConnectTask::Impl& parent;
+        asio::io_service service{};
+        asio::ip::tcp::endpoint endpoint;
+        std::chrono::seconds timeout;
+        
+    public:
+        Checker(TCPConnectTask::Impl& parent, const std::string& ip, uint16_t port, 
+                std::chrono::seconds timeout) :
+        parent(parent),
+        endpoint(asio::ip::address_v4::from_string(ip), port),
+        timeout(timeout) { }
+        
+        std::string check() {
+            service.reset();
+            asio::ip::tcp::socket socket{service, asio::ip::tcp::v4()};
+            asio::steady_timer timer{service};
+            std::mutex mutex{};
+            std::atomic_bool connect_cancelled{false};
+            std::atomic_bool timer_cancelled{false};
+            std::string error_message = "";
+            timer.expires_from_now(std::chrono::seconds(1));
+            socket.async_connect(endpoint, [&](const asio::error_code& ec) {
+                std::lock_guard<std::mutex> guard{mutex};
+                if (connect_cancelled) return;
+                timer_cancelled = true;
+                timer.cancel();
+                if(ec) {
+                    error_message = fmt::format("ERROR: {} ({})", ec.message(), su::to_string(ec.value()));
+                }
+            });
+            timer.async_wait([&](const asio::error_code&) {
+                std::lock_guard<std::mutex> guard{mutex};
+                if (timer_cancelled) return;
+                connect_cancelled = true;
+                socket.close();
+                error_message = "ERROR: Connection timed out (-1)";
+            });
+            service.run();
+            return error_message;
+        }               
+    };
     
 };
 PIMPL_FORWARD_CONSTRUCTOR(TCPConnectTask, (), (), ShellHelperException)
 PIMPL_FORWARD_METHOD(TCPConnectTask, std::string, check_connection, (const std::string&)(uint16_t), (), ShellHelperException)
+PIMPL_FORWARD_METHOD(TCPConnectTask, bool, wait_for_connection, (const std::string&)(uint16_t)(std::chrono::seconds), (), ShellHelperException)
 
 } // namespace
 

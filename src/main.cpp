@@ -10,7 +10,9 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <chrono>
 #include <cstdint>
+#include <ios>
 
 #include "tclap/CmdLine.h"
 
@@ -37,7 +39,8 @@ void task_name_error(const std::string& task) {
     std::cerr << "\nERROR: Invalid task specified: [" << task << "], supported tasks:\n\n";
     std::cerr << "    - uuid: generate and print uuid\n\n";
     std::cerr << "    - time: print current time using specified 'time_format' (optional)\n\n";
-    std::cerr << "    - connect: test connection to specified 'connect_ip' address and 'connect_port'\n\n";
+    std::cerr << "    - connect: test connection to specified 'connect_ip' address and 'connect_port';\n"
+                 "      also supports 'connect_wait' mode repeating connect attempts until specified timeout\n\n";
     std::cerr << "    - replace: replaces the placeholders in 'replace_source' file with the data\n" <<
                  "      from the 'replace_params' file and writes the results into 'replace_dest' file\n\n";
     std::exit(1);
@@ -54,6 +57,8 @@ int launch(int argc, char** argv) {
     cline.add(connect_ip);
     tc::ValueArg<uint16_t> connect_port{"p", "connect_port", "[connect] TCP port to test connection", false, 0, "connect_port"};
     cline.add(connect_port);
+    tc::ValueArg<uint16_t> connect_wait{"w", "connect_wait", "[connect] Enables repeatable attempts for connection until specified timeout in seconds (default 10 secs)", false, 10, "connect_wait"};
+    cline.add(connect_wait);
     tc::ValueArg<std::string> replace_source{"", "replace_source", "[replace] Source file for 'replace' task", false, "", "replace_source"};
     cline.add(replace_source);
     tc::ValueArg<std::string> replace_params{"", "replace_params", "[replace] Params JSON file for 'replace' task", false, "", "replace_params"};
@@ -71,12 +76,22 @@ int launch(int argc, char** argv) {
         // test TCP connection
     } else if ("connect" == task.getValue()) {
         validate_arg_set(task.getValue(), {&connect_ip, &connect_port});
-        std::string err = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
-        if (!err.empty()) {
-            std::cout << err << std::endl;
-            std::exit(1);
+        if (connect_wait.isSet()) {
+            bool res = sh::TCPConnectTask().wait_for_connection(connect_ip.getValue(), connect_port.getValue(), 
+                    std::chrono::seconds{connect_wait.getValue()});
+            if (!res) {
+                std::cout << "ERROR: Connection timed out (-1)" << std::endl;
+                std::exit(1);
+            }
+            std::cout << "SUCCESS" << std::endl;
+        } else {
+            std::string err = sh::TCPConnectTask().check_connection(connect_ip.getValue(), connect_port.getValue());
+            if (!err.empty()) {
+                std::cout << err << std::endl;
+                std::exit(1);
+            }
+            std::cout << "SUCCESS" << std::endl;
         }
-        std::cout << "SUCCESS" << std::endl;
     } else if ("replace" == task.getValue()) {
         validate_arg_set(task.getValue(), {&replace_source, &replace_params, &replace_dest});
         sh::ReplacerTask().replace_files(replace_source.getValue(), replace_params.getValue(),

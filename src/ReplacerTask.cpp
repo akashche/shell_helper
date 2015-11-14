@@ -67,9 +67,7 @@ private:
                     " must be a 'STRING'"));
         }
         return map;
-    }
-
-    
+    }    
     
     class Replacer {
         enum class State { PREFIX, PLACEHOLDER };
