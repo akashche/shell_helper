@@ -20,12 +20,14 @@ if ( NOT STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
 endif ( )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_utils )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_io )
+staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_ranges )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_reflection )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_pimpl )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_serialization )
 set ( ${PROJECT_NAME}_DEPS 
         staticlib_utils
         staticlib_io
+        staticlib_ranges
         staticlib_reflection
         staticlib_pimpl
         staticlib_serialization
@@ -59,6 +61,9 @@ endif ( )
 add_executable ( ${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_HEADERS} )
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
 target_link_libraries ( ${PROJECT_NAME} ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
+if ( STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
+    target_link_libraries ( ${PROJECT_NAME} pthread )
+endif ( )
 target_compile_options ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIONS} )
 
@@ -74,6 +79,9 @@ endif ( )
     add_library ( ${PROJECT_NAME}_testing ${${PROJECT_NAME}_TEST_LIBRARY_TYPE} ${${PROJECT_NAME}_SRC} )
     target_include_directories ( ${PROJECT_NAME}_testing BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )
     target_link_libraries ( ${PROJECT_NAME}_testing ${${PROJECT_NAME}_DEPS_PC_LIBRARIES} )
+    if ( STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
+        target_link_libraries ( ${PROJECT_NAME}_testing pthread )
+    endif ( )
     target_compile_options ( ${PROJECT_NAME}_testing PRIVATE ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER} )
     target_compile_definitions ( ${PROJECT_NAME}_testing PRIVATE ${${PROJECT_NAME}_DEFINITIONS} )
 endif ( )

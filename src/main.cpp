@@ -20,6 +20,7 @@
 #include "CurrentDateTask.hpp"
 #include "TCPConnectTask.hpp"
 #include "ReplacerTask.hpp"
+#include "StartProcessTask.hpp"
 
 namespace { // anonymous
 
@@ -43,6 +44,7 @@ void task_name_error(const std::string& task) {
                  "      also supports 'connect_wait' mode repeating connect attempts until specified timeout\n\n";
     std::cerr << "    - replace: replaces the placeholders in 'replace_source' file with the data\n" <<
                  "      from the 'replace_params' file and writes the results into 'replace_dest' file\n\n";
+    std::cerr << "    - process: starts process using the description from JSON 'process_descfile'\n\n";
     std::exit(1);
 }
 
@@ -65,6 +67,8 @@ int launch(int argc, char** argv) {
     cline.add(replace_params);
     tc::ValueArg<std::string> replace_dest{"", "replace_dest", "[replace] Destination file for the 'replace' task", false, "", "replace_dest"};
     cline.add(replace_dest);
+    tc::ValueArg<std::string> process_descfile{"d", "process_descfile", "[process] Description JSON file for process to start", false, "", "process_descfile"};
+    cline.add(process_descfile);      
     // process
     cline.parse(argc, argv);
     // generate UUID
@@ -96,6 +100,10 @@ int launch(int argc, char** argv) {
         validate_arg_set(task.getValue(), {&replace_source, &replace_params, &replace_dest});
         sh::ReplacerTask().replace_files(replace_source.getValue(), replace_params.getValue(),
                 replace_dest.getValue());
+    } else if ("process" == task.getValue()) {
+        validate_arg_set(task.getValue(), {&process_descfile});
+        uint32_t pid = sh::StartProcessTask().start_process(process_descfile.getValue());
+        std::cout << pid << std::endl;
     } else {
         task_name_error(task.getValue());
     }

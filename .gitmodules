@@ -31,3 +31,6 @@
 [submodule "deps/staticlib_io"]
 	path = deps/staticlib_io
 	url = https://github.com/staticlibs/staticlib_io.git
+[submodule "deps/staticlib_ranges"]
+	path = deps/staticlib_ranges
+	url = https://github.com/staticlibs/staticlib_ranges.git

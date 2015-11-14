@@ -28,7 +28,6 @@ namespace ss = staticlib::serialization;
 } // namespace
 
 class ReplacerTask::Impl : public staticlib::pimpl::PimplObject::Impl {        
-    
     std::string prefix;
     std::string postfix;
     size_t max_placeholder_len;
@@ -52,7 +51,7 @@ private:
                 io::make_buffered_source(
                         su::FileDescriptor{params_file, 'r'}));
         sr::ReflectedValue rv = ss::load_json(src);
-        if (sr::ReflectedType::OBJECT != rv.get_type()) throw ShellHelperException(TRACEMSG(std::string{} +
+        if (sr::ReflectedType::OBJECT != rv.get_type()) throw ShellHelperException(TRACEMSG(std::string() +
                 "Invalid params JSON file: [" + params_file + "]," +
                 " top-level type: [" + sr::stringify_reflected_type(rv.get_type()) + "],"
                 " must be an 'OBJECT'"));
