@@ -62,7 +62,7 @@ private:
                     auto range = ra::transform(refs, [](const sr::ReflectedValue& val) {
                         return val.get_string();
                     });
-                    this->arguments = ra::emplace_to_vector(range);
+                    ra::emplace_to(this->arguments, std::move(range));
                 } else if ("out_file" == fi.get_name()) {
                     this->out_file = fi.get_string();
                 }
