@@ -6,26 +6,44 @@ Cross-platform utility created as a workaround for Windows batch scripts shortco
 Implements a set of command-line tasks to be used from the shell scripts. It runs fine on Linux
 too, though most of the implemented tasks are easily achievable using standard *nix tools. 
 
-[Windows x86 binary TODO](), supports Windows XP and newer.
+Binary downloads
+----------------
 
-[Portable Linux binary TODO](), statically linked with [musl libc](http://wiki.musl-libc.org/wiki/Main_Page).
+Windows:
+
+ - [x86 for Windows XP and newer](https://bitbucket.org/akashche/downloads/downloads/shell_helper_1.0.exe)
+ - 504 KB
+ - sha256: `733b95f56932e2b5dd896e12ff8bba9ba31586ebceae2f60dd2ecbc44a64f9ec`
+ - [VirusTotal report](https://www.virustotal.com/en/file/733b95f56932e2b5dd896e12ff8bba9ba31586ebceae2f60dd2ecbc44a64f9ec/analysis/1447610022/)
+
+Linux:
+
+ - [portable x86_64 ELF binary](https://bitbucket.org/akashche/downloads/downloads/shell_helper_1.0) (statically linked with [musl libc](http://wiki.musl-libc.org/wiki/Main_Page))
+ - 4.2 MB 
+ - sha256: `e565082757d49ee1094502ad28f9f983a1bde064bdf1738be4a7a6c5efe71aba`
 
 Supported tasks
 ---------------
 
 The following command-line tasks are currently supported
 
-**uuid**: generates and prints [uuid](https://en.wikipedia.org/wiki/Universally_unique_identifier):
+####uuid
+
+Generates and prints [uuid](https://en.wikipedia.org/wiki/Universally_unique_identifier):
 
     ./shell_helper uuid
     > 541e2f11-c8b2-4ac7-84f7-79c81c480c9d
 
-**time**: prints current date and time using specified format string ([iso 8601](https://xkcd.com/1179/) by default):
+####time
+
+Prints current date and time using specified format string ([iso 8601](https://xkcd.com/1179/) by default):
 
     ./shell_helper time -f %Y_%m_%d_%H_%M_%S
     > 2015_11_15_16_31_42
 
-**connect**: tests TCP connection to the specified IP address and TCP port:
+####connect
+
+Tests TCP connection to the specified IP address and TCP port:
 
     ./shell_helper connect -i 127.0.0.1 -p 22
     > SUCCESS
@@ -38,7 +56,9 @@ Also supports "wait mode" polling periodically for the connection until it will 
     # 10 seconds passed
     > ERROR: Connection timed out (-1)
 
-**replace**: replaces placeholders in the source file using parameters from JSON file and writes results to output file:
+####replace
+
+Replaces placeholders in the source file using parameters from JSON file and writes results to output file:
 
 Source file with placeholders `src.txt`:
 
@@ -59,7 +79,9 @@ Result in `dest.txt`:
 
     41 42 43 44
 
-**process**: starts specified process in background printing its PID to and redirecting process output to the specified file
+####process
+
+Starts specified process in background printing its PID and redirecting process output to the specified file
 
 Process description JSON file `desc.json`:
 
