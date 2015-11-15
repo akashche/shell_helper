@@ -15,7 +15,7 @@ include ( ${STATICLIB_CMAKE}/staticlibs_common.cmake )
 # dependencies
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_crossguid )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_cppformat )
-if ( NOT STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
+if ( NOT STATICLIB_TOOLCHAIN MATCHES "(linux|alpine)_[^_]+_[^_]+" )
     staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/external_jansson )
 endif ( )
 staticlib_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/deps/staticlib_utils )
@@ -35,6 +35,12 @@ set ( ${PROJECT_NAME}_DEPS
         jansson
         cppformat )
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
+# patch ASIO if musl is used
+if ( STATICLIB_TOOLCHAIN MATCHES "alpine_[^_]+_[^_]+" )
+    # https://github.com/voidlinux/void-packages/blob/4d4449033e3caa02bc9f9f978c30ef6a79b573c4/srcpkgs/asio/patches/musl_strerror_r.patch
+    staticlib_apply_git_patch ( ${CMAKE_CURRENT_LIST_DIR}/deps/asio
+            ${STATICLIB_CMAKE}/resources/musl/asio106_musl.patch )
+endif ( )
 
 # build
 file ( GLOB_RECURSE ${PROJECT_NAME}_SRC ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp )
@@ -71,10 +77,10 @@ target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_DEFINITIO
 option ( ${PROJECT_NAME}_ENABLE_TESTS "Generate doxyfile and exit build" OFF )
 if ( ${PROJECT_NAME}_ENABLE_TESTS )
 # http://stackoverflow.com/q/1941443/314015
-if ( STATICLIB_TOOLCHAIN MATCHES "windows_[^_]+_[^_]+" )
-    set ( ${PROJECT_NAME}_TEST_LIBRARY_TYPE STATIC )
-else ( )
+if ( STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
     set ( ${PROJECT_NAME}_TEST_LIBRARY_TYPE SHARED )
+else ( )
+    set ( ${PROJECT_NAME}_TEST_LIBRARY_TYPE STATIC )
 endif ( )    
     add_library ( ${PROJECT_NAME}_testing ${${PROJECT_NAME}_TEST_LIBRARY_TYPE} ${${PROJECT_NAME}_SRC} )
     target_include_directories ( ${PROJECT_NAME}_testing BEFORE PRIVATE ${${PROJECT_NAME}_INCLUDES} )

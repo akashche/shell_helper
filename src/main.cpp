@@ -50,7 +50,7 @@ void task_name_error(const std::string& task) {
 
 int launch(int argc, char** argv) {
     // options
-    tc::CmdLine cline{"Shell Helper", ' ', "0.1"};
+    tc::CmdLine cline{"Shell Helper", ' ', "1.0.0"};
     tc::UnlabeledValueArg<std::string> task{"task", "Name of the task to perform", true, "", "task"};
     cline.add(task);
     tc::ValueArg<std::string> time_format{"f", "time_format", "[time] Datetime format", false, "%Y-%m-%d %H:%M:%S", "time_format"};
