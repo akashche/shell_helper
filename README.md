@@ -9,14 +9,14 @@ too, though most of the implemented tasks are easily achievable using standard *
 Binary downloads
 ----------------
 
-Windows:
+**Windows:**
 
  - [x86 for Windows XP and newer](https://bitbucket.org/akashche/downloads/downloads/shell_helper_1.0.exe)
  - 504 KB
  - sha256: `733b95f56932e2b5dd896e12ff8bba9ba31586ebceae2f60dd2ecbc44a64f9ec`
  - [VirusTotal report](https://www.virustotal.com/en/file/733b95f56932e2b5dd896e12ff8bba9ba31586ebceae2f60dd2ecbc44a64f9ec/analysis/1447610022/)
 
-Linux:
+**Linux:**
 
  - [portable x86_64 ELF binary](https://bitbucket.org/akashche/downloads/downloads/shell_helper_1.0) (statically linked with [musl libc](http://wiki.musl-libc.org/wiki/Main_Page))
  - 4.2 MB 
