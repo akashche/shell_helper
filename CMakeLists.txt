@@ -1,3 +1,16 @@
+# Copyright 2015, akashche at redhat.com
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 cmake_minimum_required ( VERSION 2.8.12 )
 
@@ -36,8 +49,8 @@ set ( ${PROJECT_NAME}_DEPS
         cppformat )
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 # patch ASIO if musl is used
+# https://github.com/voidlinux/void-packages/blob/4d4449033e3caa02bc9f9f978c30ef6a79b573c4/srcpkgs/asio/patches/musl_strerror_r.patch
 if ( STATICLIB_TOOLCHAIN MATCHES "alpine_[^_]+_[^_]+" )
-    # https://github.com/voidlinux/void-packages/blob/4d4449033e3caa02bc9f9f978c30ef6a79b573c4/srcpkgs/asio/patches/musl_strerror_r.patch
     staticlib_apply_git_patch ( ${CMAKE_CURRENT_LIST_DIR}/deps/asio
             ${STATICLIB_CMAKE}/resources/musl/asio106_musl.patch )
 endif ( )
